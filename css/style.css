@@ -1,0 +1,18 @@
+.xtoscorm-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Default: vertical (for narrow blocks) */
+.xtoscorm-buttons .xto-btn {
+    flex: 1 1 100%;
+    text-align: center;
+}
+
+/* When space is available → horizontal */
+@media (min-width: 500px) {
+    .xtoscorm-buttons .xto-btn {
+        flex: 1 1 calc(33.33% - 8px);
+    }
+}
