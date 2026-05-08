@@ -27,6 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component    = 'block_xtoscorm';
 $plugin->release      = '1.0';
 $plugin->version      = 2026042102;
-$plugin->supported    = [500, 501];
-$plugin->requires = 2022112800;
+$plugin->requires = 2022041900;
 $plugin->supported = [401, 500];
+$plugin->maturity = MATURITY_ALPHA;
