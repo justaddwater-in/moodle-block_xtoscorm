@@ -65,6 +65,14 @@ class block_xtoscorm extends block_base {
             html_writer::link($ppturl, get_string('convertpptlink', 'block_xtoscorm'), ['class' => 'btn btn-success xto-btn']) .
             html_writer::link($videourl, get_string('convertvideolink', 'block_xtoscorm'), ['class' => 'btn btn-warning xto-btn']);
 
+        // Show Account button only to site admins.
+        if (is_siteadmin()) {
+            $buttonshtml .= html_writer::link(
+                $authurl,
+                get_string('account', 'block_xtoscorm'),
+                ['class' => 'btn btn-primary xto-btn']
+            );
+        }
         $buttons = html_writer::div(
             $buttonshtml,
             'xtoscorm-buttons d-flex flex-wrap gap-2'

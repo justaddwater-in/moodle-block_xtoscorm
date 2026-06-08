@@ -1,3 +1,26 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * XtoSCORM conversion handler.
+ *
+ * @module     block_xtoscorm/convert
+ * @copyright  2026 Justaddwater <contact@justaddwater.in>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 define([
     'core/ajax',
     'core/notification',
@@ -13,7 +36,6 @@ define([
      */
     function loadStrings() {
         return Str.get_strings([
-            {key: 'limitreached', component: 'block_xtoscorm'},
             {key: 'conversionfailed', component: 'block_xtoscorm'},
             {key: 'convertbtn', component: 'block_xtoscorm'},
             {key: 'processing', component: 'block_xtoscorm'},
@@ -21,13 +43,12 @@ define([
             {key: 'nodownloadurl', component: 'block_xtoscorm'},
             {key: 'error', component: 'core'}
         ]).then(function(results) {
-            strings.limitreached = results[0];
-            strings.conversionfailed = results[1];
-            strings.convertbtn = results[2];
-            strings.processing = results[3];
-            strings.filenotselected = results[4];
-            strings.nodownloadurl = results[5];
-            strings.error = results[6];
+            strings.conversionfailed = results[0];
+            strings.convertbtn = results[1];
+            strings.processing = results[2];
+            strings.filenotselected = results[3];
+            strings.nodownloadurl = results[4];
+            strings.error = results[5];
 
             return null;
         });
@@ -47,9 +68,11 @@ define([
      * Show notification
      * @param {string} type
      * @param {string} message
+     * @param {string} allowHtml
      * @returns {Promise}
      */
-    function showAlert(type, message) {
+    function showAlert(type, message, allowHtml = false) {
+
         const container = document.getElementById('moodleNotification');
 
         if (!container) {
@@ -57,20 +80,15 @@ define([
         }
 
         return Templates.render('block_xtoscorm/notification', {
-            type: type,
-            message: message
+            type,
+            message,
+            allowHtml
         }).then(function(html, js) {
+
             Templates.replaceNodeContents(container, html, js);
 
-            const alertEl = container.querySelector('.alert');
-
-            if (alertEl) {
-                setTimeout(function() {
-                    alertEl.remove();
-                }, 5000);
-            }
-
             return null;
+
         }).catch(Notification.exception);
     }
 
@@ -121,28 +139,6 @@ define([
         });
     }
 
-    /**
-     * Handle redirect
-     * @param {string} url
-     */
-    function handleRedirect(url) {
-        window.onbeforeunload = null;
-
-        require(['core_form/changechecker'], function(ChangeChecker) {
-
-            if (ChangeChecker.disableAllChecks) {
-                ChangeChecker.disableAllChecks();
-            }
-
-            if (ChangeChecker.resetAllFormDirtyStates) {
-                ChangeChecker.resetAllFormDirtyStates();
-            }
-
-            setTimeout(function() {
-                window.location.href = url;
-            }, 1000);
-        });
-    }
 
     /**
      * Handle API response
@@ -151,23 +147,53 @@ define([
      */
     function handleResponse(res, form) {
 
-        if (res && res.errorcode === 'limitreached') {
-            showAlert('warning', strings.limitreached);
-            handleRedirect(res.redirect);
+        // API custom error.
+        if (res && res.success === false) {
+
+            let msg = `
+                <div class="xtoscorm-upgrade-box">
+                    <div class="xtoscorm-upgrade-message">
+                        ${res.message || strings.conversionfailed}
+                    </div>
+            `;
+
+            if (res.upgrade_url) {
+
+                msg += `
+                    <div class="mt-3">
+                        <a href="${res.upgrade_url}"
+                        target="_blank"
+                        class="btn btn-warning btn-lg fw-bold px-4 py-2 rounded-pill shadow-sm">
+                            🚀 Upgrade Plan
+                        </a>
+                    </div>
+                `;
+            }
+
+            msg += `</div>`;
+
+            showAlert('warning', msg, true);
             return;
         }
 
+        // Success.
         if (res && res.url) {
+
             triggerDownload(res.url);
+
             resetForm(form);
 
             setTimeout(function() {
                 safeReload();
             }, 1000);
 
-        } else {
-            Notification.alert(strings.error, strings.nodownloadurl);
+            return;
         }
+
+        Notification.alert(
+            strings.error,
+            strings.nodownloadurl
+        );
     }
 
     /**
@@ -175,7 +201,11 @@ define([
      * @param {Object} error
      */
     function handleError(error) {
-        const msg = error && error.message ? error.message : strings.conversionfailed;
+
+        const msg = (
+            error && error.message
+        ) ? error.message : strings.conversionfailed;
+
         showAlert('danger', msg);
     }
 

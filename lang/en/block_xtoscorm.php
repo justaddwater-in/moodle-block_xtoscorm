@@ -28,6 +28,7 @@ $string['account'] = 'Account';
 $string['apierror'] = 'Conversion failed: {$a}';
 $string['apierror_auth'] = 'API error: {$a}';
 $string['blockdescription'] = 'Convert your learning content into SCORM-compliant LMS packages instantly.';
+$string['cachedef_xtoscorm_token'] = 'XtoScorm session token cache';
 $string['completionmarker'] = 'Completion Marker';
 $string['completionmarker_help'] = 'User must view the selected number of pages to mark completion.';
 $string['completionmarker_video'] = 'Completion Marker';
@@ -62,14 +63,40 @@ $string['name'] = 'Name';
 $string['nodownloadurl'] = 'No download URL received';
 $string['nofilefound'] = 'No File Found';
 $string['notoken'] = 'Access token missing from authentication response: {$a}';
+$string['pdftoscorm'] = 'PDF to SCORM';
 $string['pleaselogin'] = 'Please Login';
 $string['pluginname'] = 'XtoSCORM';
+$string['ppttoscorm'] = 'PPT to SCORM';
+$string['privacy:metadata:auth'] =
+    'The plugin connects to an external authentication provider for account login.';
+$string['privacy:metadata:auth:email'] =
+    'The user email shared with the authentication provider.';
+$string['privacy:metadata:auth:fullname'] =
+    'The user full name shared with the authentication provider.';
+$string['privacy:metadata:auth:userid'] =
+    'The Moodle user ID shared with the authentication provider.';
 $string['privacy:metadata:block_xtoscorm_tokens'] = 'Stores OAuth tokens for XtoSCORM integration.';
 $string['privacy:metadata:block_xtoscorm_tokens:expiresat'] = 'Token expiry timestamp.';
 $string['privacy:metadata:block_xtoscorm_tokens:refreshtoken'] = 'Encrypted refresh token (not exported for security).';
 $string['privacy:metadata:block_xtoscorm_tokens:timecreated'] = 'Record creation timestamp.';
 $string['privacy:metadata:block_xtoscorm_tokens:token'] = 'Encrypted access token (not exported for security).';
 $string['privacy:metadata:block_xtoscorm_tokens:userid'] = 'The ID of the user.';
+$string['privacy:metadata:external'] =
+    'The plugin sends user data to the external XtoSCORM conversion service.';
+$string['privacy:metadata:external:conversiontype'] =
+    'Type of SCORM conversion requested by the user.';
+$string['privacy:metadata:external:deviceinfo'] =
+    'Device and browser information sent to the external conversion service.';
+$string['privacy:metadata:external:email'] =
+    'The user email address sent to the external conversion service.';
+$string['privacy:metadata:external:filename'] =
+    'Uploaded file names processed by the conversion service.';
+$string['privacy:metadata:external:fullname'] =
+    'The user full name sent to the external conversion service.';
+$string['privacy:metadata:external:ipaddress'] =
+    'The user IP address sent to the external conversion service.';
+$string['privacy:metadata:external:userid'] =
+    'The Moodle user ID sent to the external conversion service.';
 $string['processing'] = 'Processing...';
 $string['scormversion'] = 'SCORM Version';
 $string['scormversionvideo'] = 'SCORM Version';
@@ -78,5 +105,7 @@ $string['uploadpdf'] = 'Upload PDF (Max 10MB)';
 $string['uploadppt'] = 'Upload PPT (Max 10MB)';
 $string['uploadvideo'] = 'Upload Video (Max 50MB)';
 $string['videoseekbar'] = 'Video Seek Bar';
+$string['videotoscorm'] = 'Video to SCORM';
 $string['xtoscorm:addinstance'] = 'Add a new XtoSCORM block';
 $string['xtoscorm:myaddinstance'] = 'Add a new XtoSCORM block to Dashboard';
+$string['xtoscorm:use'] = 'Use XtoSCORM conversion features';

@@ -15,18 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for block_xtoscorm
+ * Cache definitions for XtoSCORM
+ *
+ * Documentation: {@link https://docs.moodle.org/dev/Cache_API}
  *
  * @package    block_xtoscorm
- * @copyright  2026 Justaddwater <contact@justaddwater.in>
+ * @category   cache
+ * @copyright  2026 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component    = 'block_xtoscorm';
-$plugin->release      = '1.0';
-$plugin->version      = 2026060300;
-$plugin->supported    = [500, 501];
-$plugin->requires = 2022112800;
-$plugin->supported = [401, 500];
+$definitions = [
+    'xtoscorm_token' => [
+        'mode' => cache_store::MODE_SESSION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ],
+];

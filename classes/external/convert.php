@@ -35,7 +35,7 @@ class convert extends external_api {
      * Summary of execute_parameters
      * @return external_function_parameters
      */
-    public static function execute_parameters() {
+    public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'fileid' => new external_value(PARAM_INT, 'Draft ID'),
             'type'   => new external_value(PARAM_TEXT, 'Type'),
@@ -59,10 +59,48 @@ class convert extends external_api {
      * @throws \moodle_exception
      * @return array{url: string}
      */
-    public static function execute($fileid, $type, $scormversion, $completion, $fitmode, $viewmode, $hideprogress) {
+    public static function execute(
+        $fileid,
+        $type,
+        $scormversion,
+        $completion,
+        $fitmode,
+        $viewmode,
+        $hideprogress
+    ) {
 
-        global $DB, $USER, $CFG;
+        global $DB, $USER, $CFG, $PAGE;
+
+        $params = self::validate_parameters(
+            self::execute_parameters(),
+            [
+                'fileid' => $fileid,
+                'type' => $type,
+                'scormversion' => $scormversion,
+                'completion' => $completion,
+                'fitmode' => $fitmode,
+                'viewmode' => $viewmode,
+                'hideprogress' => $hideprogress,
+            ]
+        );
+
         require_login();
+
+        $context = \context_system::instance();
+
+        self::validate_context($context);
+
+        require_capability('block/xtoscorm:use', $context);
+
+        $PAGE->set_context($context);
+
+        $fileid = $params['fileid'];
+        $type = $params['type'];
+        $scormversion = $params['scormversion'];
+        $completion = $params['completion'];
+        $fitmode = $params['fitmode'];
+        $viewmode = $params['viewmode'];
+        $hideprogress = $params['hideprogress'];
 
         $fs = get_file_storage();
 
@@ -78,30 +116,8 @@ class convert extends external_api {
         if (!$files) {
             throw new \moodle_exception('nofilefound', 'block_xtoscorm');
         }
-        $headers = token_manager::build_headers($USER->id);
-                // API URL.
-        $remainingurl = 'https://api.xtoscorm.com/scorm/limit';
-
-        // Call API using curl.
         $curl = new \curl();
-        $response = $curl->get($remainingurl, [], ['CURLOPT_HTTPHEADER' => $headers]);
-
-        $remainingdata = json_decode($response, true);
-
-        // Safely get remaining.
-        $remaining = $remainingdata['data']['remaining'] ?? null;
-        // STOP if limit reached.
-        if ($remaining !== null && (int)$remaining === 0) {
-            $authurl = token_manager::get_auth_url();
-
-            return [
-                'url' => '', // IMPORTANT (keep key present).
-                'status' => false,
-                'errorcode' => 'limitreached',
-                'redirect' => $authurl->out(false),
-            ];
-        }
-
+        $headers = token_manager::build_headers($USER->id);
         $file = reset($files);
 
         $tempfile = tempnam(sys_get_temp_dir(), 'upload_');
@@ -155,37 +171,38 @@ class convert extends external_api {
 
         $data = json_decode($response);
 
-        // DEBUG.
         if (empty($data->file_name)) {
-                $errormessage = 'Something went wrong during conversion';
+            $errormessage = 'Conversion failed';
 
             if (!empty($data->detail)) {
                 $errormessage = $data->detail;
             }
 
-            throw new \moodle_exception('apierror', 'block_xtoscorm', '', $errormessage);
+            return [
+                'success' => false,
+                'url' => '',
+                'message' => $errormessage,
+            ];
         }
 
         $url = $CFG->wwwroot . "/blocks/xtoscorm/download_proxy.php?file=" .
         urlencode($data->file_name) . "&name=" . urlencode($data->og_file_name) . "&type=" . urlencode($type);
 
         return [
+            'success' => true,
             'url' => $url,
-            'status' => true,
-            'errorcode' => '',
-            'redirect' => '',
+            'message' => '',
         ];
     }
     /**
      * Summary of execute_returns
      * @return external_single_structure
      */
-    public static function execute_returns() {
+    public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'url' => new external_value(PARAM_URL, 'Download URL', VALUE_OPTIONAL),
-            'status' => new external_value(PARAM_BOOL, 'Status', VALUE_OPTIONAL),
-            'errorcode' => new external_value(PARAM_TEXT, 'Error code', VALUE_OPTIONAL),
-            'redirect' => new external_value(PARAM_URL, 'Redirect URL', VALUE_OPTIONAL),
+            'success' => new external_value(PARAM_BOOL, 'Status'),
+            'message' => new external_value(PARAM_RAW, 'Message'),
         ]);
     }
 }

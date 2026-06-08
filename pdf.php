@@ -27,13 +27,14 @@ require('../../config.php');
 require_login();
 
 $context = context_system::instance();
+require_capability('block/xtoscorm:use', $context);
 $PAGE->set_context($context);
 
 $url = new moodle_url('/blocks/xtoscorm/pdf.php');
 $PAGE->set_url($url);
 
-$PAGE->set_title('PDF to SCORM');
-$PAGE->set_heading('PDF to SCORM');
+$PAGE->set_title(get_string('pdftoscorm', 'block_xtoscorm'));
+$PAGE->set_heading(get_string('pdftoscorm', 'block_xtoscorm'));
 $PAGE->set_pagelayout('standard');
 
 
