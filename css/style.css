@@ -16,3 +16,11 @@
         flex: 1 1 calc(33.33% - 8px);
     }
 }
+.xtoscorm-upgrade-box {
+    text-align: center;
+}
+
+.xtoscorm-upgrade-message {
+    font-size: 16px;
+    font-weight: 600;
+}

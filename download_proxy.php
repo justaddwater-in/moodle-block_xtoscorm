@@ -15,54 +15,62 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TODO describe file download_proxy
  *
  * @package    block_xtoscorm
  * @copyright  2026 Justaddwater <contact@justaddwater.in>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 use block_xtoscorm\token_manager;
+
 require('../../config.php');
+require_once($CFG->libdir . '/filelib.php');
+
 require_login();
+$context = context_system::instance();
+require_capability('block/xtoscorm:use', $context);
 
 // Get params.
 $file = required_param('file', PARAM_TEXT);
-$name = required_param('name', PARAM_TEXT);
-$type = required_param('type', PARAM_TEXT);
+$name = required_param('name', PARAM_FILE);
+$type = required_param('type', PARAM_ALPHA);
 
-// Build headers from token manager (BEST PRACTICE).
+// Build headers from token manager.
 $headers = token_manager::build_headers($USER->id);
 
 // FastAPI URL.
-$url = "https://api.xtoscorm.com/scorm/download/$type/moodle/$file/" . urlencode($name);
+$url = "https://api.xtoscorm.com/scorm/download/{$type}/moodle/{$file}/" .
+    urlencode($name);
 
-// ...cURL request.
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+// Moodle curl wrapper.
+$curl = new \curl();
 
-$response = curl_exec($ch);
+$options = [
+    'CURLOPT_HTTPHEADER' => $headers,
+    'CURLOPT_TIMEOUT' => 60,
+    'CURLOPT_FOLLOWLOCATION' => true,
+];
 
-if ($response === false) {
-    http_response_code(500);
-    echo "Error: " . curl_error($ch);
-    exit;
+$response = $curl->get($url, [], $options);
+
+if ($response === false || $curl->get_errno()) {
+    throw new \moodle_exception(
+        'downloadfailed',
+        'block_xtoscorm'
+    );
 }
 
-// Clean buffer.
+// Clean output buffers.
 while (ob_get_level()) {
     ob_end_clean();
 }
 
-// Force correct headers.
-header('Content-Description: File Transfer');
+// Download headers.
 header('Content-Type: application/zip');
 header('Content-Disposition: attachment; filename="' . $name . '"');
-header('Content-Transfer-Encoding: binary');
 header('Content-Length: ' . strlen($response));
-header('Cache-Control: no-cache, must-revalidate');
+header('Cache-Control: private, must-revalidate');
 header('Pragma: public');
-header('Expires: 0');
 
 echo $response;
 exit;

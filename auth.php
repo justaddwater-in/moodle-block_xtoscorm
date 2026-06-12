@@ -35,6 +35,7 @@ global $DB, $USER, $PAGE, $OUTPUT;
 // Page setup
 // ...-----------------------------.
 $context = context_system::instance();
+require_capability('block/xtoscorm:use', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/xtoscorm/auth.php');

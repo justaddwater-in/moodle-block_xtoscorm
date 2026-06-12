@@ -7,11 +7,19 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * RequireJS configuration for block_xtoscorm.
+ *
+ * @copyright 2026 Justaddwater <contact@justaddwater.in>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 var config = {
     paths: {
         'block_xtoscorm/pdfjs': M.cfg.wwwroot + '/blocks/xtoscorm/lib/pdfjs/pdf.min'

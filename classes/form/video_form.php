@@ -64,16 +64,42 @@ class video_form extends \moodleform {
 
         // SCORM Version.
         $scorm = [];
-        $scorm[] = $mform->createElement('radio', 'scorm_version', '', 'SCORM 1.2', '1.2');
-        $scorm[] = $mform->createElement('radio', 'scorm_version', '', 'SCORM 2004', '2004');
+        $scorm[] = $mform->createElement(
+            'radio',
+            'scorm_version',
+            '',
+            get_string('scorm12', 'block_xtoscorm'),
+            '1.2'
+        );
+
+        $scorm[] = $mform->createElement(
+            'radio',
+            'scorm_version',
+            '',
+            get_string('scorm2004', 'block_xtoscorm'),
+            '2004'
+        );
 
         $mform->addGroup($scorm, 'scorm_group', get_string('scormversion', 'block_xtoscorm'), [' '], false);
         $mform->setDefault('scorm_version', '1.2');
 
         // Video Seek Bar.
         $seek = [];
-        $seek[] = $mform->createElement('radio', 'seek_bar', '', 'Show', 'show');
-        $seek[] = $mform->createElement('radio', 'seek_bar', '', 'Hide', 'hide');
+        $seek[] = $mform->createElement(
+            'radio',
+            'seek_bar',
+            '',
+            get_string('show', 'block_xtoscorm'),
+            'show'
+        );
+
+        $seek[] = $mform->createElement(
+            'radio',
+            'seek_bar',
+            '',
+            get_string('hide', 'block_xtoscorm'),
+            'hide'
+        );
 
         $mform->addGroup($seek, 'seek_group', get_string('videoseekbar', 'block_xtoscorm'), [' '], false);
         $mform->setDefault('seek_bar', 'show');

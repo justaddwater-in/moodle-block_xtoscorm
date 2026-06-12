@@ -18,14 +18,23 @@
     @template block_xtoscorm/notification
 
     Renders an alert notification banner for XtoSCORM operations.
-
+    @copyright 2026 Justaddwater <contact@justaddwater.in>
+    @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
     Example context (json):
     {
         "type": "warning",
         "message": "Your conversion limit has been reached."
     }
 }}
-<div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
-    {{message}}
+<div class="alert alert-{{type}} alert-dismissible fade show shadow-sm" role="alert">
+
+    {{#allowHtml}}
+        {{{message}}}
+    {{/allowHtml}}
+
+    {{^allowHtml}}
+        {{message}}
+    {{/allowHtml}}
+
     <button type="button" class="btn-close"></button>
 </div>

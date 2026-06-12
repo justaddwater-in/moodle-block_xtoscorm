@@ -1,11 +1,31 @@
 /* global pdfjsLib,*/
 
-define([], function() {
+define(['core/str',], function(Str) {
 
     let pdfDoc = null;
 
     return {
         init: function() {
+            let strings = {};
+
+            /**
+             * Preload language strings
+             * @returns {Promise}
+             */
+            function loadStrings() {
+                return Str.get_strings([
+                    {key: 'totalpages', component: 'block_xtoscorm'},
+                    {key: 'loading', component: 'block_xtoscorm'},
+                    {key: 'errorreadingpdf', component: 'block_xtoscorm'},
+                    {key: 'filereaderror', component: 'block_xtoscorm'},
+                ]).then(function(results) {
+                    strings.totalpages = results[0];
+
+
+                    return null;
+                });
+            }
+            loadStrings();
 
             const checkReady = setInterval(() => {
 
@@ -77,7 +97,7 @@ define([], function() {
 
                                     // ✅ Update UI
                                     if (totalPagesText) {
-                                        totalPagesText.innerText = 'Total pages: ' + totalPages;
+                                        totalPagesText.innerText = totalPages;
                                     }
 
                                     completionField.removeAttribute('disabled');
@@ -90,7 +110,7 @@ define([], function() {
                                 .catch(function() {
 
                                     if (totalPagesText) {
-                                        totalPagesText.innerText = 'Error reading PDF';
+                                        totalPagesText.innerText = strings.errorreadingpdf;
                                     }
 
                                     return null;
@@ -105,7 +125,7 @@ define([], function() {
                     reader.onerror = function() {
 
                         if (totalPagesText) {
-                            totalPagesText.innerText = 'File read error';
+                            totalPagesText.innerText = strings.filereaderror;
                         }
 
                         return null;

@@ -27,6 +27,7 @@ require_once($CFG->libdir . '/filelib.php');
 require_login();
 
 $context = context_system::instance();
+require_capability('block/xtoscorm:use', $context);
 $PAGE->set_context($context);
 
 global $DB, $USER;
@@ -46,7 +47,7 @@ if (!preg_match('/^[a-zA-Z0-9_\-]{10,128}$/', $sessionid)) {
 // ...==============================
 // 7. Call external API (secure)
 // ==============================
-$url = "https://api0.xtoscorm.com/api/session?session_id=" . $sessionid;
+$url = "https://api.xtoscorm.com/api/session?session_id=" . $sessionid;
 
 $curl = new \curl();
 
@@ -84,7 +85,6 @@ if (!$access) {
 token_manager::save_token(
     $USER->id,
     $access,
-    $refresh,
     $expires
 );
 
