@@ -49,7 +49,8 @@ class token_manager {
         // Token expired.
         if (!empty($record->expiresat) && $record->expiresat < time()) {
             debugging(
-                'block_xtoscorm: Token expired for user ' . $userid,
+                'block_xtoscorm: ' .
+                get_string('tokenexpireddebug', 'block_xtoscorm', $userid),
                 DEBUG_DEVELOPER
             );
 
@@ -67,8 +68,12 @@ class token_manager {
             return encryption::decrypt($record->token);
         } catch (\Exception $e) {
             debugging(
-                'block_xtoscorm: Failed to decrypt token for user ' .
-                $userid . ' - ' . $e->getMessage(),
+                'block_xtoscorm: ' .
+                get_string(
+                    'decryptfaileddebug',
+                    'block_xtoscorm',
+                    $userid
+                ) . ' - ' . $e->getMessage(),
                 DEBUG_DEVELOPER
             );
 

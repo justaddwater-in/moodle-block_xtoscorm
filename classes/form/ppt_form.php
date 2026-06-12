@@ -62,8 +62,21 @@ class ppt_form extends \moodleform {
 
         // SCORM Version.
         $radioarray = [];
-        $radioarray[] = $mform->createElement('radio', 'scorm_version', '', 'SCORM 1.2', '1.2');
-        $radioarray[] = $mform->createElement('radio', 'scorm_version', '', 'SCORM 2004', '2004');
+        $radioarray[] = $mform->createElement(
+            'radio',
+            'scorm_version',
+            '',
+            get_string('scorm12', 'block_xtoscorm'),
+            '1.2'
+        );
+
+        $radioarray[] = $mform->createElement(
+            'radio',
+            'scorm_version',
+            '',
+            get_string('scorm2004', 'block_xtoscorm'),
+            '2004'
+        );
 
         $mform->addGroup($radioarray, 'scorm_group', get_string('scormversion', 'block_xtoscorm'), [' '], false);
         $mform->setDefault('scorm_version', '1.2');

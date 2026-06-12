@@ -36,56 +36,141 @@ class pdf_form extends \moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('filepicker', 'pdf_file', get_string('uploadpdf', 'block_xtoscorm'), null, [
-            'accepted_types' => ['.pdf'], 'maxbytes' => 10485760,
-        ]);
+        $mform->addElement(
+            'filepicker',
+            'pdf_file',
+            get_string('uploadpdf', 'block_xtoscorm'),
+            null,
+            [
+                'accepted_types' => ['.pdf'],
+                'maxbytes' => 10485760,
+            ]
+        );
 
         $mform->addRule('pdf_file', null, 'required');
 
         // Completion Marker.
-        $mform->addElement('text', 'completion_marker', get_string('completionmarker', 'block_xtoscorm'));
+        $mform->addElement(
+            'text',
+            'completion_marker',
+            get_string('completionmarker', 'block_xtoscorm')
+        );
+
         $mform->setType('completion_marker', PARAM_TEXT);
-        // Add placeholder.
         $mform->setDefault('completion_marker', '');
+
         $mform->updateElementAttr('completion_marker', [
-            'placeholder' => 'Upload PDF to enable',
+            'placeholder' => get_string('uploadpdfplaceholder', 'block_xtoscorm'),
             'disabled' => 'disabled',
             'type' => 'number',
         ]);
 
-        // Add help icon.
-        $mform->addHelpButton('completion_marker', 'completionmarker', 'block_xtoscorm');
+        $mform->addHelpButton(
+            'completion_marker',
+            'completionmarker',
+            'block_xtoscorm'
+        );
+
+        // Total Pages.
         $mform->addElement(
             'static',
             'totalpages',
             '',
-            '<small class="text-muted">Total pages: <span id="totalPagesText">0</span></small>'
+            '<small class="text-muted">' .
+            get_string('totalpages', 'block_xtoscorm') .
+            ' <span id="totalPagesText">0</span></small>'
         );
+
         // SCORM Version.
         $radioarray = [];
-        $radioarray[] = $mform->createElement('radio', 'scorm_version', '', 'SCORM 1.2', '1.2');
-        $radioarray[] = $mform->createElement('radio', 'scorm_version', '', 'SCORM 2004', '2004');
+        $radioarray[] = $mform->createElement(
+            'radio',
+            'scorm_version',
+            '',
+            get_string('scorm12', 'block_xtoscorm'),
+            '1.2'
+        );
 
-        $mform->addGroup($radioarray, 'scorm_group', 'SCORM Version', [' '], false);
+        $radioarray[] = $mform->createElement(
+            'radio',
+            'scorm_version',
+            '',
+            get_string('scorm2004', 'block_xtoscorm'),
+            '2004'
+        );
+
+        $mform->addGroup(
+            $radioarray,
+            'scorm_group',
+            get_string('scormversion', 'block_xtoscorm'),
+            [' '],
+            false
+        );
+
         $mform->setDefault('scorm_version', '1.2');
 
         // Fit PDF To.
         $fitarray = [];
-        $fitarray[] = $mform->createElement('radio', 'fit_type', '', 'Width', 'width');
-        $fitarray[] = $mform->createElement('radio', 'fit_type', '', 'Height', 'height');
 
-        $mform->addGroup($fitarray, 'fit_group', 'Fit PDF To', [' '], false);
+        $fitarray[] = $mform->createElement(
+            'radio',
+            'fit_type',
+            '',
+            get_string('width', 'block_xtoscorm'),
+            'width'
+        );
+
+        $fitarray[] = $mform->createElement(
+            'radio',
+            'fit_type',
+            '',
+            get_string('height', 'block_xtoscorm'),
+            'height'
+        );
+
+        $mform->addGroup(
+            $fitarray,
+            'fit_group',
+            get_string('fitpdfto', 'block_xtoscorm'),
+            [' '],
+            false
+        );
+
         $mform->setDefault('fit_type', 'width');
 
         // PDF View Mode.
         $viewarray = [];
-        $viewarray[] = $mform->createElement('radio', 'view_mode', '', 'Page by Page', 'page');
-        $viewarray[] = $mform->createElement('radio', 'view_mode', '', 'Sequential (Scroll)', 'Sequential');
 
-        $mform->addGroup($viewarray, 'view_group', 'PDF View Mode', [' '], false);
+        $viewarray[] = $mform->createElement(
+            'radio',
+            'view_mode',
+            '',
+            get_string('pagebypage', 'block_xtoscorm'),
+            'page'
+        );
+
+        $viewarray[] = $mform->createElement(
+            'radio',
+            'view_mode',
+            '',
+            get_string('sequentialscroll', 'block_xtoscorm'),
+            'Sequential'
+        );
+
+        $mform->addGroup(
+            $viewarray,
+            'view_group',
+            get_string('pdfviewmode', 'block_xtoscorm'),
+            [' '],
+            false
+        );
+
         $mform->setDefault('view_mode', 'page');
 
-        $mform->addElement('button', 'pdfBtn', get_string('convertbtn', 'block_xtoscorm'));
-        $mform->setAttributes(['id' => 'pdfForm']);
+        $mform->addElement(
+            'button',
+            'pdfBtn',
+            get_string('convertbtn', 'block_xtoscorm')
+        );
     }
 }

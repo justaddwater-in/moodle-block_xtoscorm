@@ -33,8 +33,8 @@ $PAGE->set_context($context);
 $url = new moodle_url('/blocks/xtoscorm/pdf.php');
 $PAGE->set_url($url);
 
-$PAGE->set_title(get_string('pdftoscorm', 'block_xtoscorm'));
-$PAGE->set_heading(get_string('pdftoscorm', 'block_xtoscorm'));
+$PAGE->set_title(get_string('pdftoscorm', 'block_xtoscorm') . ' | ' . get_string('pluginname', 'block_xtoscorm'));
+$PAGE->set_heading(get_string('pluginname', 'block_xtoscorm'));
 $PAGE->set_pagelayout('standard');
 
 
@@ -69,7 +69,9 @@ if ($mform->is_cancelled()) {
 
 echo $OUTPUT->header();
 echo '<div id="moodleNotification"></div>';
-echo $OUTPUT->heading('PDF to SCORM Converter');
+echo $OUTPUT->heading(
+    get_string('pdftoscormconverter', 'block_xtoscorm')
+);
 
 $mform->display();
 
