@@ -29,7 +29,7 @@ require_login();
 
 use block_xtoscorm\token_manager;
 
-global $DB, $USER, $PAGE, $OUTPUT;
+global $DB, $USER, $PAGE, $OUTPUT, $SESSION;
 
 // -----------------------------
 // Page setup
@@ -130,9 +130,15 @@ if ($token) {
     }
 } else {
     // -----------------------------
-    // Not connected
+    // Not connected.
+    // Generate a one-time OAuth state value.
     // -----------------------------.
-    $authurl = token_manager::get_auth_url();
+    $state = random_string(64);
+
+    // Store the state in the current Moodle session.
+    $SESSION->xtoscorm_oauth_state = $state;
+
+    $authurl = token_manager::get_auth_url($state);
 
     echo html_writer::tag(
         'h3',

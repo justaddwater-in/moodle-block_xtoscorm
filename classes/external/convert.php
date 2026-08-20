@@ -160,7 +160,11 @@ class convert extends external_api {
             $response = $curl->post(
                 "https://api.xtoscorm.com/scorm/convert/$type",
                 $postdata,
-                ['CURLOPT_HTTPHEADER' => $headers]
+                [
+                    'CURLOPT_HTTPHEADER' => $headers,
+                    'CURLOPT_CONNECTTIMEOUT' => 10,
+                    'CURLOPT_TIMEOUT' => 300,
+                ]
             );
         } finally {
             // ALWAYS cleanup.
@@ -169,13 +173,36 @@ class convert extends external_api {
             }
         }
 
+        if ($response === false || $curl->get_errno()) {
+            throw new \moodle_exception(
+                'conversionapierror',
+                'block_xtoscorm'
+            );
+        }
+
+        if (empty($response)) {
+            throw new \moodle_exception(
+                'conversionapierror',
+                'block_xtoscorm'
+            );
+        }
+
         $data = json_decode($response);
 
-        if (empty($data->file_name)) {
+        if (json_last_error() !== JSON_ERROR_NONE || !is_object($data)) {
+            throw new \moodle_exception(
+                'invalidresponse',
+                'block_xtoscorm'
+            );
+        }
+
+        if (empty($data->file_name) || empty($data->og_file_name)) {
             $errormessage = 'Conversion failed';
 
             if (!empty($data->detail)) {
-                $errormessage = $data->detail;
+                $errormessage = is_string($data->detail)
+                    ? $data->detail
+                    : 'The conversion service returned an invalid response.';
             }
 
             return [
@@ -185,12 +212,18 @@ class convert extends external_api {
             ];
         }
 
-        $url = $CFG->wwwroot . "/blocks/xtoscorm/download_proxy.php?file=" .
-        urlencode($data->file_name) . "&name=" . urlencode($data->og_file_name) . "&type=" . urlencode($type);
+        $url = new \moodle_url(
+            '/blocks/xtoscorm/download_proxy.php',
+            [
+                'file' => $data->file_name,
+                'name' => $data->og_file_name,
+                'type' => $type,
+            ]
+        );
 
         return [
             'success' => true,
-            'url' => $url,
+            'url' => $url->out(false),
             'message' => '',
         ];
     }

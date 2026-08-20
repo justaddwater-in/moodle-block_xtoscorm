@@ -35,6 +35,22 @@ $file = required_param('file', PARAM_TEXT);
 $name = required_param('name', PARAM_FILE);
 $type = required_param('type', PARAM_ALPHA);
 
+if (!preg_match('/^[A-Za-z0-9._-]+$/', $file)) {
+    throw new \moodle_exception(
+        'invalidfile',
+        'block_xtoscorm'
+    );
+}
+
+$allowedtypes = ['pdf', 'ppt', 'video'];
+
+if (!in_array($type, $allowedtypes, true)) {
+    throw new \moodle_exception(
+        'invalidtype',
+        'block_xtoscorm'
+    );
+}
+
 // Build headers from token manager.
 $headers = token_manager::build_headers($USER->id);
 
@@ -47,6 +63,7 @@ $curl = new \curl();
 
 $options = [
     'CURLOPT_HTTPHEADER' => $headers,
+    'CURLOPT_CONNECTTIMEOUT' => 10,
     'CURLOPT_TIMEOUT' => 60,
     'CURLOPT_FOLLOWLOCATION' => true,
 ];

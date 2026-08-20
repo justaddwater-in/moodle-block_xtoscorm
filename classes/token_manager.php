@@ -215,10 +215,10 @@ class token_manager {
     /**
      * Generate OAuth login URL.
      *
+     * @param string $state One-time OAuth state value.
      * @return \moodle_url
      */
-    public static function get_auth_url(): \moodle_url {
-
+    public static function get_auth_url(string $state): \moodle_url {
         $returnurl = (
             new \moodle_url(
                 '/blocks/xtoscorm/callback.php'
@@ -229,6 +229,7 @@ class token_manager {
             'https://api.xtoscorm.com/oauth/start',
             [
                 'return_url' => $returnurl,
+                'state' => $state,
             ]
         );
     }

@@ -42,11 +42,13 @@ class block_xtoscorm extends block_base {
         if ($this->content !== null) {
             return $this->content;
         }
+
+        $this->content = new stdClass();
+
         if (!isloggedin() || isguestuser()) {
             $this->content->text = get_string('pleaselogin', 'block_xtoscorm');
             return $this->content;
         }
-        $this->content = new stdClass();
 
         $pdfurl   = new moodle_url('/blocks/xtoscorm/pdf.php');
         $ppturl   = new moodle_url('/blocks/xtoscorm/ppt.php');

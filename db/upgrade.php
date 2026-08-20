@@ -45,5 +45,39 @@ function xmldb_block_xtoscorm_upgrade($oldversion) {
 
         upgrade_block_savepoint(true, 2026042102, 'xtoscorm');
     }
+
+    if ($oldversion < 2026082002) {
+        $table = new xmldb_table('block_xtoscorm_tokens');
+
+        // Add refreshtoken field if it is missing.
+        $field = new xmldb_field(
+            'refreshtoken',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            null,
+            null
+        );
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Add expiresat field if it is missing.
+        $field = new xmldb_field(
+            'expiresat',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            null,
+            null
+        );
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_block_savepoint(true, 2026082002, 'xtoscorm');
+    }
     return true;
 }
