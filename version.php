@@ -25,6 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'block_xtoscorm';
-$plugin->release      = '1.0';
+$plugin->release      = '1.1';
 $plugin->version      = 2026082001;
 $plugin->requires     = 2022112800;
