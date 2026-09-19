@@ -132,3 +132,5 @@ $string['xtoscorm:myaddinstance'] = 'Add a new XtoSCORM block to Dashboard';
 $string['xtoscorm:use'] = 'Use XtoSCORM conversion features';
 $string['conversionapierror'] = 'The XtoSCORM conversion service could not be reached. Please try again.';
 $string['invalidresponse'] = 'The XtoSCORM conversion service returned an invalid response.';
+$string['uploadlimitnotice'] = 'Upload size limits may apply based on your server configuration. For higher limits and the full feature set, use the web version.';
+$string['visitwebversion'] = 'Visit Web Version';

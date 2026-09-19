@@ -107,5 +107,19 @@ class video_form extends \moodleform {
         // Submit.
         $mform->addElement('button', 'videoBtn', get_string('convertbtn', 'block_xtoscorm'));
         $mform->setAttributes(['id' => 'videoForm']);
+
+        $mform->addElement(
+            'static',
+            'uploadlimitnotice',
+            '',
+            '<div class="alert alert-info mt-3" role="alert">' .
+            get_string('uploadlimitnotice', 'block_xtoscorm') . '<br/>' .
+            \html_writer::link(
+                'https://xtoscorm.com/video-to-scorm',
+                get_string('visitwebversion', 'block_xtoscorm'),
+                ['target' => '_blank', 'rel' => 'noopener', 'class' => 'alert-link']
+            ) .
+            '</div>'
+        );
     }
 }

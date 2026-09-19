@@ -84,5 +84,19 @@ class ppt_form extends \moodleform {
         // Submit button (custom label).
         $mform->addElement('button', 'pptBtn', get_string('convertbtn', 'block_xtoscorm'));
         $mform->setAttributes(['id' => 'pptForm']);
+
+        $mform->addElement(
+            'static',
+            'uploadlimitnotice',
+            '',
+            '<div class="alert alert-info mt-3" role="alert">' .
+            get_string('uploadlimitnotice', 'block_xtoscorm') . '<br/>' .
+            \html_writer::link(
+                'https://xtoscorm.com/ppt-to-scorm',
+                get_string('visitwebversion', 'block_xtoscorm'),
+                ['target' => '_blank', 'rel' => 'noopener', 'class' => 'alert-link']
+            ) .
+            '</div>'
+        );
     }
 }
